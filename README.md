@@ -20,6 +20,8 @@ Local API and UI for fine-tuning language models using Unsloth.
 
 ## Setup
 
+0. Run on linux, or [setup WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+
 1. Create conda environment:
 ```bash
 conda create --name unsloth_env \
