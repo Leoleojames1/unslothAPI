@@ -5,7 +5,7 @@
 </p>
 <p align="center">
   <a href="https://docs.unsloth.ai/"><img src="made with unsloth.png" height="48"></a>
-  <a href="https://discord.gg/mNeQZzBHuW"><img src="Discord button.png" height="48"></a>
+  <a href="https://discord.gg/fv6Mq5Xv28"><img src="Discord button.png" height="48"></a>
 </p>
 
 Local API and UI for fine-tuning language models using Unsloth.
