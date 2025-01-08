@@ -1,0 +1,16 @@
+# Cache directories
+__pycache__/
+*.pyc
+
+# Data and model directories
+datasets/
+models/
+outputs/
+
+# Environment files
+.env
+.env*
+Zone.Identifier
+
+# VS Code
+.vscode/
