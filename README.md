@@ -61,6 +61,11 @@ Start UI:
 Access:
 - API: http://localhost:8000
 - UI: http://localhost:7860
+- 
+## Usage
+<p align="center">
+  <img src="uiTrainTest.png" alt="UNSLOTH API BOAT" width="850"/>
+</p>
 
 ## Directory Structure
 
