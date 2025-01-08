@@ -1,4 +1,3 @@
-# unsloth_api.py
 import os
 import uvicorn
 from fastapi import FastAPI, HTTPException, BackgroundTasks
@@ -105,9 +104,54 @@ def setup_model(model_name: str):
             chat_template="llama-3.1"
         )
         
+        # Ensure the model returns a loss
+        model.config.return_dict = True
+        model.config.output_hidden_states = False
+        model.config.output_attentions = False
+        
         return model, tokenizer
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error setting up model: {str(e)}")
+
+def format_dataset(examples, tokenizer):
+    conversations = [
+        [
+            {"role": "user", "content": inst},
+            {"role": "assistant", "content": out}
+        ]
+        for inst, out in zip(examples['instruction'], examples['output'])
+    ]
+    
+    formatted_data = []
+    for i, conv in enumerate(conversations):
+        result = tokenizer.apply_chat_template(conv, tokenize=True, add_generation_prompt=False)
+        
+        # Limit debug output to the first 5 results
+        if i < 5:
+            print(f"Conversation: {conv}")
+            print(f"Result: {result}")
+        
+        # Check if result is a list or dictionary
+        if isinstance(result, list):
+            if i < 5:
+                print("Result is a list")
+            formatted_data.append({
+                "input_ids": result,
+                "labels": result
+            })
+        elif isinstance(result, dict):
+            if i < 5:
+                print("Result is a dictionary")
+            if "input_ids" in result:
+                formatted_data.append({
+                    "input_ids": result["input_ids"],
+                    "labels": result["input_ids"]
+                })
+        else:
+            if i < 5:
+                print(f"Unexpected result format: {result}")
+    
+    return {"input_ids": [data["input_ids"] for data in formatted_data], "labels": [data["labels"] for data in formatted_data]}
 
 async def train_model(config: TrainingConfig):
     try:
@@ -124,24 +168,8 @@ async def train_model(config: TrainingConfig):
         dataset = load_dataset(config.dataset_name, split="train")
         
         # Format dataset
-        def format_dataset(examples):
-            conversations = [
-                [
-                    {"role": "user", "content": inst},
-                    {"role": "assistant", "content": out}
-                ]
-                for inst, out in zip(examples['instruction'], examples['output'])
-            ]
-            
-            return {
-                "text": [
-                    tokenizer.apply_chat_template(conv, tokenize=False, add_generation_prompt=False)
-                    for conv in conversations
-                ]
-            }
-        
         dataset = dataset.map(
-            format_dataset,
+            lambda examples: format_dataset(examples, tokenizer),
             batched=True,
             batch_size=100,
         )
@@ -165,7 +193,7 @@ async def train_model(config: TrainingConfig):
             model=model,
             tokenizer=tokenizer,
             train_dataset=dataset,
-            dataset_text_field="text",
+            dataset_text_field="input_ids",
             max_seq_length=2048,
             data_collator=DataCollatorForSeq2Seq(tokenizer=tokenizer),
             args=training_args

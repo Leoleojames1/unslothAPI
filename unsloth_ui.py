@@ -6,6 +6,10 @@ import time
 from pathlib import Path
 import numpy as np
 import plotly.graph_objects as go
+import plotly.graph_objects as go
+import plotly.io as pio
+import imageio
+import os
 
 # Configuration
 API_URL = "http://localhost:8000"
@@ -25,8 +29,8 @@ SUPPORTED_MODELS = [
 
 GGUF_METHODS = ["q8_0", "q4_k_m", "q5_k_m", "f16"]
 
-def create_visualization(step, loss):
-    """Create a 3D visualization of neural activity"""
+def create_visualization(step, loss, save_path=None):
+    """Create a 3D visualization of neural activity and optionally save as a video"""
     size = 5
     x, y, z = np.meshgrid(
         np.linspace(0, 1, size),
@@ -61,6 +65,9 @@ def create_visualization(step, loss):
         ),
         margin=dict(l=0, r=0, b=0, t=30)
     )
+    
+    if save_path:
+        pio.write_image(fig, save_path)
     
     return fig
 
@@ -107,9 +114,12 @@ class UnslothUI:
             status = response.json()
             
             if status["status"] == "training":
+                step = int(status["progress"] * 100)
+                save_path = f"outputs/visualization_step_{step}.png"
                 fig = create_visualization(
-                    step=int(status["progress"] * 100),
-                    loss=status["loss"]
+                    step=step,
+                    loss=status["loss"],
+                    save_path=save_path
                 )
                 return (
                     f"Training in progress: {status['progress']:.1f}% complete\n"
@@ -118,6 +128,14 @@ class UnslothUI:
                 )
             else:
                 self.training_status = status["status"]
+                # Create video or GIF from saved images
+                images = []
+                for file_name in sorted(os.listdir("outputs")):
+                    if file_name.startswith("visualization_step_") and file_name.endswith(".png"):
+                        images.append(imageio.imread(os.path.join("outputs", file_name)))
+                if images:
+                    imageio.mimsave("outputs/visualization.gif", images, fps=10)
+                    imageio.mimsave("outputs/visualization.mp4", images, fps=10)
                 return f"Status: {status['status']}", None
                 
         except Exception as e:
