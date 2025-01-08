@@ -64,7 +64,7 @@ Access:
 - 
 ## Usage
 <p align="center">
-  <img src="uiTrainTest.png" alt="UNSLOTH API BOAT" width="450"/>
+  <img src="uiTrainTest.png" alt="UNSLOTH API BOAT" width="850"/>
 </p>
 
 ## Directory Structure
