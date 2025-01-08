@@ -1,11 +1,11 @@
 # UnslothAPI
 
 <p align="center">
-  <img src="unslothAPI.png" alt="OARC LOGO" width="250"/>
+  <img src="unslothAPI.png" alt="UNSLOTH API BOAT" width="450"/>
 </p>
 <p align="center">
   <a href="https://docs.unsloth.ai/"><img src="made with unsloth.png" height="48"></a>
-  <a href="https://discord.gg/mNeQZzBHuW"><img src="icons/Discord button.png" height="48"></a>
+  <a href="https://discord.gg/fv6Mq5Xv28"><img src="Discord button.png" height="48"></a>
 </p>
 
 Local API and UI for fine-tuning language models using Unsloth.
@@ -41,12 +41,10 @@ HF_TOKEN=your_huggingface_token
 ```
 
 4. Reference unsloth documentation for a deeper understanding:
-```
-https://github.com/unslothai/unsloth
 
+[Unsloth Github](https://github.com/unslothai/unsloth)
 
-https://docs.unsloth.ai/
-```
+[Unsloth Documentation](https://docs.unsloth.ai/)
 
 ## Usage
 
