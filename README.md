@@ -48,6 +48,8 @@ HF_TOKEN=your_huggingface_token
 
 [Unsloth Documentation](https://docs.unsloth.ai/)
 
+[Matt William's Finetuning Tips](https://www.youtube.com/watch?v=W2QuK9TwYXs&ab_channel=MattWilliams)
+
 ## Usage
 
 Start API server:
